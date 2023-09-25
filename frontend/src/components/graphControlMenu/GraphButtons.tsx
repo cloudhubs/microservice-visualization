@@ -207,6 +207,7 @@ const GraphButtonMenu: React.FC<Props> = ({
             <GraphButton onClick={screenshotGraph}>Capture Graph</GraphButton>
             <GraphButton onClick={toggleTrack}>Track Menu</GraphButton>
             <GraphButton onClick={forceReset}>Reset</GraphButton>
+            <GraphButton onClick={forceReset}>Select Nodes</GraphButton> {/*new button for select node*/}
         </div>
     );
 };
