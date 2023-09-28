@@ -2,6 +2,7 @@ import React from "react";
 import { ForceGraphProps as SharedProps } from "react-force-graph-2d";
 
 import Graph3D from "./Graph3D";
+import Graph2D from "./Graph2D";
 
 type Props = {
     width: number;
@@ -55,20 +56,27 @@ const VisualizationOptions: React.FC<Props> = ({
 
     return (
         <div>
-            {/* {!is3d ? (
+            { !is3d ? (
                 <Graph2D
                     width={width}
                     height={height}
                     {...GraphProps}
                     search={search}
-                    graphRef={graphRef}
                     threshold={threshold}
+                    graphRef={graphRef}
                     setInitCoords={setInitCoords}
                     setInitRotation={setInitRotation}
                     antiPattern={antiPattern}
                     colorMode={colorMode}
+                    defNodeColor={defNodeColor}
+                    setDefNodeColor={setDefNodeColor}
+                    setGraphData={setGraphData}
+                    isDarkMode={isDarkMode}
+                    selectedAntiPattern={selectedAntiPattern}
+                    trackNodes={trackNodes}
+                    focusNode={focusNode}
                 />
-            ) : ( */}
+            ) : (
             <Graph3D
                 width={width}
                 height={height}
@@ -87,7 +95,9 @@ const VisualizationOptions: React.FC<Props> = ({
                 selectedAntiPattern={selectedAntiPattern}
                 trackNodes={trackNodes}
                 focusNode={focusNode}
-            />
+            />)
+            }
+
         </div>
     );
 };
