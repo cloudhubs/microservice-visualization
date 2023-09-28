@@ -46,7 +46,7 @@ const GraphMenu: React.FC<Props> = ({
 }) => {
     return (
         <div className="absolute top-2 right-2 z-50 flex flex-col gap-2 text-sm bg-blue-300 bg-opacity-60 rounded-lg p-4 w-44">
-            {/* <label className="relative inline-flex items-center cursor-pointer">
+            { <label className="relative inline-flex items-center cursor-pointer">
                 <input
                     type="checkbox"
                     value=""
@@ -60,7 +60,7 @@ const GraphMenu: React.FC<Props> = ({
                 <span className="ml-3 text-sm font-medium text-gray-900">
                     3D
                 </span>
-            </label> */}
+            </label> }
             <label className="relative inline-flex items-center cursor-pointer">
                 <input
                     type="checkbox"
