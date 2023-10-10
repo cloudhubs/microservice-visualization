@@ -31,6 +31,8 @@ function App() {
     const [defNodeColor, setDefNodeColor] = useState(false);
     const [trackNodes, setTrackNodes] = useState([]);
     const [focusNode, setFocusNode] = useState();
+    const [selectNodes, setSelectNodes] = useState(false);
+    const [selectedNodes, setSelectedNodes] = useState([]);
 
     setupLogger();
     setupAxios();
@@ -77,6 +79,8 @@ function App() {
                 setSearch={setSearch}
                 value={value}
                 setValue={setValue}
+                selectNode={selectNodes}
+                setSelectedNode={setSelectNodes}
                 graphData={graphData}
                 setGraphData={setGraphData}
                 initCoords={initCoords}
@@ -94,6 +98,9 @@ function App() {
                 width={ref?.current?.clientWidth ?? 1710}
                 search={search}
                 threshold={value}
+                selectNodes={selectNodes}
+                selectedNodes = {selectedNodes}
+                setSelectedNodes={setSelectedNodes}
                 graphRef={graphRef}
                 graphData={graphData}
                 setInitCoords={setInitCoords}

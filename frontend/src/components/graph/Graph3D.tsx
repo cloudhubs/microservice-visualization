@@ -18,6 +18,9 @@ type Props = {
     search: string;
     threshold: number;
     sharedProps: SharedProps;
+    selectNodes: boolean;
+    selectedNodes: any;
+    setSelectedNodes: any;
     graphRef: any;
     setInitCoords: any;
     setInitRotation: any;
@@ -36,6 +39,9 @@ const Graph: React.FC<Props> = ({
     width,
     height,
     sharedProps,
+    selectNodes,
+    selectedNodes,
+    setSelectedNodes,
     search,
     threshold,
     graphRef,
@@ -120,23 +126,41 @@ const Graph: React.FC<Props> = ({
     const handleNodeClick = useCallback(
         (node: any) => {
             if (node != null) {
-                if (graphRef.current) {
-                    console.log(graphRef.current.camera());
-                    const camPos = graphRef.current.camera().position;
-                    graphRef.current.cameraPosition(
-                        {
-                            x: camPos.x,
-                            y: camPos.y,
-                            z: camPos.z,
-                        },
-                        node,
-                        2500
-                    );
+                console.log(selectNodes);
+                if (selectNodes === true){ //if in Select Nodes Mode
+                    if (selectedNodes.includes(node.nodeName)) {
+                        selectedNodes.splice(
+                            selectedNodes.findIndex(
+                                (element: any) => element === node.nodeName
+                            ),
+                            1
+                        );
+                        setSelectedNodes([...selectedNodes]);
+                    } else {
+                        trackNodes.push(node.nodeName);
+                        setSelectedNodes([...selectedNodes]);
+                    }
+                    console.log("select node");
                 }
-                const event = new CustomEvent("nodeClick", {
-                    detail: { node: node },
-                });
-                document.dispatchEvent(event);
+                else {
+                    if (graphRef.current) {
+                        console.log(graphRef.current.camera());
+                        const camPos = graphRef.current.camera().position;
+                        graphRef.current.cameraPosition(
+                            {
+                                x: camPos.x,
+                                y: camPos.y,
+                                z: camPos.z,
+                            },
+                            node,
+                            2500
+                        );
+                    }
+                    const event = new CustomEvent("nodeClick", {
+                        detail: { node: node },
+                    });
+                    document.dispatchEvent(event);
+                }
             }
         },
         [graphRef]
