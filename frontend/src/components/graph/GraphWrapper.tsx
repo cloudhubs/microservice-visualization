@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { ForceGraphProps as SharedProps } from "react-force-graph-2d";
 
 import Graph3D from "./Graph3D";
@@ -45,6 +45,7 @@ const VisualizationOptions: React.FC<Props> = ({
     trackNodes,
     focusNode,
 }) => {
+    const [hideNodes, setHideNodes] = useState<any>(new Set());
     const Shared2D3DProps: SharedProps = {
         linkDirectionalArrowRelPos: 1,
         graphData: graphData,
@@ -53,6 +54,55 @@ const VisualizationOptions: React.FC<Props> = ({
     const GraphProps = {
         sharedProps: Shared2D3DProps,
     };
+
+    const createSmallNode = (link: any) => {
+        const smallNode = {
+            nodeName: `SmallNode_${link.name}`,
+            nodeRelSize: .5,
+            // You can customize the properties of the small node here
+        };
+
+        return smallNode;
+    };
+
+    const generateSmallNodes = (graphData: any) => {
+        const updatedNodes = [...graphData.nodes];
+        const updatedLinks = [...graphData.links];
+
+        graphData.links.forEach((link: any) => {
+            const smallNode = createSmallNode(link);
+            hideNodes.add(smallNode);
+
+
+            // Connect the small node to the main node
+            updatedLinks.push({
+                source: link.source,
+                target: smallNode.nodeName,
+                name: `Link_${link.name}`,
+                linkDistance: 1
+                // You can customize the properties of the link here
+            });
+
+            // Connect the small node to the target node
+            updatedLinks.push({
+                source: smallNode.nodeName,
+                target: link.target,
+                name: `Link_${link.name}`,
+                // You can customize the properties of the link here
+            });
+
+            updatedNodes.push(smallNode);
+        });
+
+        return { nodes: updatedNodes, links: updatedLinks };
+    };
+
+    useEffect(() => {
+        // Generate small nodes and update the graph data
+        const updatedGraphData = generateSmallNodes(graphData);
+        setGraphData(updatedGraphData);
+
+    }, []);
 
     return (
         <div>
@@ -94,6 +144,8 @@ const VisualizationOptions: React.FC<Props> = ({
                 isDarkMode={isDarkMode}
                 selectedAntiPattern={selectedAntiPattern}
                 trackNodes={trackNodes}
+                hideNodes={hideNodes}
+                setHideNodes={setHideNodes}
                 focusNode={focusNode}
             />)
             }

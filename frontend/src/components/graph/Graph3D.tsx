@@ -30,6 +30,8 @@ type Props = {
     selectedAntiPattern: any;
     trackNodes: any;
     focusNode: any;
+    hideNodes: any;
+    setHideNodes: any;
 };
 
 const Graph: React.FC<Props> = ({
@@ -49,6 +51,8 @@ const Graph: React.FC<Props> = ({
                                     selectedAntiPattern,
                                     trackNodes,
                                     focusNode,
+                                    hideNodes,
+                                    setHideNodes,
                                 }) => {
     const [highlightNodes, setHighlightNodes] = useState<Set<string>>(
         new Set()
@@ -59,49 +63,9 @@ const Graph: React.FC<Props> = ({
 
     const [hoverNode, setHoverNode] = useState(null);
     const [selectedLink, setSelectedLink] = useState(null);
-    const [hideNodes, setHideNodes] = useState<any>(new Set());
-
-    const createSmallNode = (link: any) => {
-        const smallNode = {
-            nodeName: `SmallNode_${link.name}`,
-            nodeRelSize: .5,
-            // You can customize the properties of the small node here
-        };
-
-        return smallNode;
-    };
-
-    const generateSmallNodes = (graphData: any) => {
-        const updatedNodes = [...graphData.nodes];
-        const updatedLinks = [...graphData.links];
-
-        graphData.links.forEach((link: any) => {
-            const smallNode = createSmallNode(link);
-            hideNodes.add(smallNode);
 
 
-            // Connect the small node to the main node
-            updatedLinks.push({
-                source: link.source,
-                target: smallNode.nodeName,
-                name: `Link_${link.name}`,
-                linkDistance: 1
-                // You can customize the properties of the link here
-            });
 
-            // Connect the small node to the target node
-            updatedLinks.push({
-                source: smallNode.nodeName,
-                target: link.target,
-                name: `Link_${link.name}`,
-                // You can customize the properties of the link here
-            });
-
-            updatedNodes.push(smallNode);
-        });
-
-        return { nodes: updatedNodes, links: updatedLinks };
-    };
 
     // On page load
     useEffect(() => {
@@ -110,16 +74,13 @@ const Graph: React.FC<Props> = ({
         setInitCoords({ x, y, z });
         setInitRotation(graphRef.current.camera().quaternion);
 
-        // Generate small nodes and update the graph data
-        const updatedGraphData = generateSmallNodes(sharedProps.graphData);
-        setGraphData(updatedGraphData);
-
         graphRef.current.d3Force("charge").strength((node: any) => {
             return -500;
         });
         graphRef.current.d3Force("link").distance((link: any) => {
             return 80;
         });
+
 
     }, []);
 
