@@ -31,6 +31,8 @@ type Props = {
     selectedAntiPattern: any;
     trackNodes: any;
     focusNode: any;
+    hideNodes: any;
+    setHideNodes: any;
 };
 
 const Graph: React.FC<Props> = ({
@@ -48,13 +50,14 @@ const Graph: React.FC<Props> = ({
     selectedAntiPattern,
     trackNodes,
     focusNode,
+    hideNodes,
+    setHideNodes,
 })  => {
      const [highlightNodes, setHighlightNodes] = useState<any>(new Set());
      const [highlightLinks, setHighlightLinks] = useState<any>(new Set());
      const [hoverNode, setHoverNode] = useState(null);
      const [selectedLink, setSelectedLink] = useState(null);
      const [defNodeColor, setDefNodeColor] = useState(false);
-     const [hideNodes, setHideNodes] = useState<any>(new Set());
 
      const handleNodeHover = (node: any) => {
          highlightNodes.clear();
@@ -102,9 +105,15 @@ const Graph: React.FC<Props> = ({
 
      useEffect(() => {
          graphRef.current.d3Force("charge").strength((node: any) => {
+             if(node.nodeName.startsWith("SmallNode")){
+                 return 0;
+             }
              return -120;
          });
          graphRef.current.d3Force("link").distance((link: any) => {
+             if(link.target.nodeName.startsWith("SmallNode")){
+                 return 0;
+             }
              return 100;
          });
      }, [graphRef]);
@@ -123,7 +132,14 @@ const Graph: React.FC<Props> = ({
                  }
              }}
              linkWidth={(link) => getLinkWidth(link, search, highlightLinks, false, "")}
-             linkDirectionalArrowLength={20}
+             linkDirectionalArrowLength={(link: any) => {
+                 if(link.target.nodeName != null){
+                     if(link.target.nodeName.startsWith("SmallNode_")){
+                         return 0;
+                     }
+                 }
+                 return 20;
+             }}
              linkDirectionalArrowRelPos={sharedProps.linkDirectionalArrowRelPos}
              linkDirectionalArrowColor={(link) =>
                  getLinkColor(link, search, hoverNode, antiPattern, false, null, null)
@@ -137,7 +153,6 @@ const Graph: React.FC<Props> = ({
              onLinkHover={handleLinkHover}
              nodeVisibility={(node) => getVisibility(node, hideNodes)}
              nodeId={"nodeName"}
-             nodeLabel={"nodeName"}
              nodeCanvasObjectMode={() => "after"}
              nodeRelSize={8}
              onNodeRightClick={(node: any) => {
@@ -172,17 +187,21 @@ const Graph: React.FC<Props> = ({
                      .replace("rgb", "rgba")
              }
              nodeCanvasObject={(node: any, ctx: any) => {
-                 let fontSize = 10;
-                 ctx.font = `${fontSize}px "Orbitron,sans-serif"`;
-                 const textWidth = ctx.measureText(node.nodeName).width;
-                 let bckgDimensions = [textWidth, fontSize].map(
-                     (n) => n + fontSize * 0.2
-                 );
-                 ctx.textAlign = "center";
-                 ctx.textBaseline = "middle";
-                 ctx.fillStyle = node.nodeColor;
-                 ctx.fillText(node.nodeName, node.x, node.y - 10);
-                 node.__bckgDimensions = bckgDimensions;
+                 if(node.nodeName.startsWith("SmallNode_")){
+                     node.val = 0.1;
+                 } else {
+                     let fontSize = 10;
+                     ctx.font = `${fontSize}px "Orbitron,sans-serif"`;
+                     const textWidth = ctx.measureText(node.nodeName).width;
+                     let bckgDimensions = [textWidth, fontSize].map(
+                         (n) => n + fontSize * 0.2
+                     );
+                     ctx.textAlign = "center";
+                     ctx.textBaseline = "middle";
+                     ctx.fillStyle = node.nodeColor;
+                     ctx.fillText(node.nodeName, node.x, node.y - 10);
+                     node.__bckgDimensions = bckgDimensions;
+                 }
              }}
              linkColor={(link) =>
                  getLinkColor(link, search, hoverNode, antiPattern, false, null, null)
@@ -204,118 +223,6 @@ const Graph: React.FC<Props> = ({
                  }
              }}
          />
-         /*<ForceGraph2D
-             ref={graphRef}
-             graphData={sharedProps.graphData}
-             nodeId={"nodeName"}
-             width={width}
-             height={height}
-             nodeColor={(node: any) =>
-                 "rgba(200,25,25,1)"
-             }
-             nodeVisibility={(node) => getVisibility(node, hideNodes)}
-             onNodeRightClick={(node: any) => {
-                 const event = new CustomEvent("nodecontextmenu", {
-                     detail: {
-                         node: node,
-                         coords: graphRef.current.graph2ScreenCoords(
-                             node.x,
-                             node.y,
-                             node.z
-                         ),
-                         graphData: sharedProps.graphData,
-                         setHideNodes: setHideNodes,
-                         setGraphData: setGraphData,
-                     },
-                 });
-                 document.dispatchEvent(event);
-             }}
-             nodeCanvasObject={(node: any, ctx: any) => {
-                 let fontSize = 10;
-                 ctx.font = `${fontSize}px "Orbitron,sans-serif"`;
-                 const textWidth = ctx.measureText(node.nodeName).width;
-                 let bckgDimensions = [textWidth, fontSize].map(
-                     (n) => n + fontSize * 0.2
-                 );
-                 ctx.textAlign = "center";
-                 ctx.textBaseline = "middle";
-                 ctx.fillStyle = node.nodeColor;
-                 ctx.fillText(node.nodeName, node.x, node.y - 10);
-                 node.__bckgDimensions = bckgDimensions;
-             }}
-             linkCurvature={(link) => {
-                 let test = false;
-                 sharedProps.graphData?.links.forEach((link2: any) => {
-                     if (
-                         link2.target === link.source &&
-                         link2.source === link.target
-                     ) {
-                         test = true;
-                     }
-                 });
-                 if (test) {
-                     return 0.4;
-                 } else {
-                     return 0;
-                 }
-             }}
-             linkDirectionalArrowLength={10}
-             linkDirectionalArrowRelPos={sharedProps.linkDirectionalArrowRelPos}
-             linkDirectionalArrowColor={(link) =>
-                 getLinkColor(
-                     link,
-                     search,
-                     hoverNode,
-                     antiPattern,
-                     true,
-                     selectedAntiPattern,
-                     focusNode
-                 )
-             }
-             linkDirectionalParticles={(link: any) => {
-                 return highlightLinks.has(link.name) ? 4 : 0;
-             }}
-             linkDirectionalParticleWidth={(link) =>
-                 getLinkWidth(
-                     link,
-                     search,
-                     highlightLinks,
-                     antiPattern,
-                     selectedAntiPattern
-                 )
-             }
-             linkColor={(link) =>
-                 getLinkColor(
-                     link,
-                     search,
-                     hoverNode,
-                     antiPattern,
-                     true,
-                     selectedAntiPattern,
-                     focusNode
-                 )
-             }
-             onNodeDragEnd={(node) => {
-                 if (node.x && node.y) {
-                     node.fx = node.x;
-                     node.fy = node.y;
-                 }
-             }}
-             backgroundColor={"rgba(0,0,0,0)"}
-             nodeRelSize={8}
-             onNodeClick={handleNodeClick}
-             onNodeHover={handleNodeHover}
-             onLinkHover={handleLinkHover}
-             linkWidth={(link) =>
-                 getLinkWidth(
-                     link,
-                     search,
-                     highlightLinks,
-                     antiPattern,
-                     selectedAntiPattern
-                 )
-             }
-         />*/
      );
 };
 

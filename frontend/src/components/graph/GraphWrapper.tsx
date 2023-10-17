@@ -124,6 +124,8 @@ const VisualizationOptions: React.FC<Props> = ({
                     isDarkMode={isDarkMode}
                     selectedAntiPattern={selectedAntiPattern}
                     trackNodes={trackNodes}
+                    hideNodes={hideNodes}
+                    setHideNodes={setHideNodes}
                     focusNode={focusNode}
                 />
             ) : (
