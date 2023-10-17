@@ -137,7 +137,7 @@ const Graph: React.FC<Props> = ({
                         );
                         setSelectedNodes([...selectedNodes]);
                     } else {
-                        trackNodes.push(node.nodeName);
+                        selectedNodes.push(node.nodeName);
                         setSelectedNodes([...selectedNodes]);
                     }
                     console.log("select node");
@@ -163,7 +163,7 @@ const Graph: React.FC<Props> = ({
                 }
             }
         },
-        [graphRef]
+        [graphRef, selectNodes]
     );
 
     return (
