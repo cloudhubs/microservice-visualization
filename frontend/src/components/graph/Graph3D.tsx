@@ -75,9 +75,15 @@ const Graph: React.FC<Props> = ({
         setInitRotation(graphRef.current.camera().quaternion);
 
         graphRef.current.d3Force("charge").strength((node: any) => {
+            if(node.nodeName.startsWith("SmallNode")){
+                return 0;
+            }
             return -500;
         });
         graphRef.current.d3Force("link").distance((link: any) => {
+            if(link.target.nodeName.startsWith("SmallNode")){
+                return -80;
+            }
             return 80;
         });
 
@@ -192,7 +198,7 @@ const Graph: React.FC<Props> = ({
                 );
 
                 const nodes = new THREE.Mesh(
-                    new THREE.SphereGeometry(5),
+                    new THREE.SphereGeometry(node.nodeName.startsWith("SmallNode_") ? 0.5 : 5),
                     new THREE.MeshLambertMaterial({
                         transparent: true,
                         color: color,
@@ -204,26 +210,30 @@ const Graph: React.FC<Props> = ({
                         ),
                     })
                 );
-                const sprite = new SpriteText(node.nodeName);
-                sprite.material.depthWrite = false;
 
-                // Get sprite color, have to change alpha channel as there is no other function
-                sprite.color = color
-                    .replace(
-                        ")",
-                        `,${getNodeOpacity(
-                            node,
-                            search,
-                            highlightNodes,
-                            focusNode
-                        )})`
-                    )
-                    .replace("rgb", "rgba");
+                if(!node.nodeName.startsWith("SmallNode_")){
+                    const sprite = new SpriteText(node.nodeName);
+                    sprite.material.depthWrite = false;
 
-                sprite.textHeight = 14;
-                sprite.position.set(0, 15, 0);
+                    // Get sprite color, have to change alpha channel as there is no other function
+                    sprite.color = color
+                        .replace(
+                            ")",
+                            `,${getNodeOpacity(
+                                node,
+                                search,
+                                highlightNodes,
+                                focusNode
+                            )})`
+                        )
+                        .replace("rgb", "rgba");
 
-                nodes.add(sprite);
+                    sprite.textHeight = 14;
+                    sprite.position.set(0, 15, 0);
+
+                    nodes.add(sprite);
+                }
+
                 return nodes;
             }}
             nodeThreeObjectExtend={false}
@@ -243,7 +253,14 @@ const Graph: React.FC<Props> = ({
                     return 0;
                 }
             }}
-            linkDirectionalArrowLength={10}
+            linkDirectionalArrowLength={(link: any) => {
+                if(link.target.nodeName != null){
+                    if(link.target.nodeName.startsWith("SmallNode_")){
+                        return 0;
+                    }
+                }
+                return 10;
+            }}
             linkDirectionalArrowRelPos={sharedProps.linkDirectionalArrowRelPos}
             linkDirectionalArrowColor={(link) =>
                 getLinkColor(
@@ -257,6 +274,11 @@ const Graph: React.FC<Props> = ({
                 )
             }
             linkDirectionalParticles={(link: any) => {
+                if(link.target.nodeName != null){
+                    if(link.target.nodeName.startsWith("SmallNode_")){
+                        return 0;
+                    }
+                }
                 return highlightLinks.has(link.name) ? 4 : 0;
             }}
             linkDirectionalParticleWidth={(link) =>

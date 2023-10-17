@@ -67,11 +67,11 @@ const VisualizationOptions: React.FC<Props> = ({
 
     const generateSmallNodes = (graphData: any) => {
         const updatedNodes = [...graphData.nodes];
-        const updatedLinks = [...graphData.links];
+        const updatedLinks: { source: any; target: any; name: string; linkDistance?: number; }[] = [];
 
         graphData.links.forEach((link: any) => {
             const smallNode = createSmallNode(link);
-            hideNodes.add(smallNode);
+            //hideNodes.add(smallNode);
 
 
             // Connect the small node to the main node

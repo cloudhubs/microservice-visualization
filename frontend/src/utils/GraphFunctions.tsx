@@ -500,6 +500,11 @@ function getLinkWidth(
     antiPattern: boolean,
     selectedAntiPattern: string
 ) {
+    if(link.target.nodeName != null){
+        if(link.target.nodeName.startsWith("SmallNode_")){
+            return 1;
+        }
+    }
     let size = (link.requests?.length ?? 0) + 2;
     if (antiPattern) {
         if (
