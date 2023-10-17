@@ -7,7 +7,8 @@ import {
     getLinkWidth,
     getNodeOpacity,
     getVisibility,
-    showNeighbors,
+    getNeighbors,
+    showNeighbors
 } from "../../utils/GraphFunctions";
 import * as THREE from "three";
 import SpriteText from "three-spritetext";
@@ -86,18 +87,25 @@ const Graph: React.FC<Props> = ({
          setHighlightLinks(highlightLinks);
      };
 
+
      const handleNodeClick = useCallback(
          (node: any) => {
              if (node != null) {
                  if (graphRef.current) {
-                     graphRef.current.zoomToFit(1500, 300, (node2: any) => {
+                     graphRef.current.zoomToFit(400, 150, (node2: any) => {
                          return node.nodeName === node2.nodeName;
                      });
                  }
+
                  const event = new CustomEvent("nodeClick", {
                      detail: { node: node },
                  });
                  document.dispatchEvent(event);
+                 
+                
+                //setHideNodes(showNeighbors(node, graphRef.current, setHideNodes));
+                //const updatedHideNodes = showNeighbors(node, graphRef.current, setHideNodes);
+                //setHideNodes(updatedHideNodes);
              }
          },
          [graphRef]
