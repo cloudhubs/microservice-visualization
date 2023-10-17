@@ -126,7 +126,6 @@ const Graph: React.FC<Props> = ({
     const handleNodeClick = useCallback(
         (node: any) => {
             if (node != null) {
-                console.log(selectNodes);
                 if (selectNodes === true){ //if in Select Nodes Mode
                     if (selectedNodes.includes(node.nodeName)) {
                         selectedNodes.splice(
@@ -140,7 +139,6 @@ const Graph: React.FC<Props> = ({
                         selectedNodes.push(node.nodeName);
                         setSelectedNodes([...selectedNodes]);
                     }
-                    console.log("select node");
                 }
                 else {
                     if (graphRef.current) {
