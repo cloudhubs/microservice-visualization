@@ -47,10 +47,15 @@ function showNeighbors(node: any, graphData: any, setHideNodes: any) {
     setHideNodes(hideNodes);
 }
 
-function getVisibility(node: any, hideNodes: any) {
+function getVisibility(node: any, hideNodes: any, selectNodes: any, selectedNodes: any) {
     if (hideNodes.has(node)) {
         return false;
     }
+    if (selectNodes){
+        if (selectedNodes.has(node)){
+            return false;
+        }
+    } 
     return true;
 }
 

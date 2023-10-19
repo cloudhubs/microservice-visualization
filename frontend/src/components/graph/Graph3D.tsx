@@ -171,7 +171,7 @@ const Graph: React.FC<Props> = ({
             nodeId={"nodeName"}
             width={width}
             height={height}
-            nodeVisibility={(node) => getVisibility(node, hideNodes)}
+            nodeVisibility={(node) => getVisibility(node, hideNodes, selectNodes, selectedNodes)}
             onNodeRightClick={(node: any) => {
                 const event = new CustomEvent("nodecontextmenu", {
                     detail: {
