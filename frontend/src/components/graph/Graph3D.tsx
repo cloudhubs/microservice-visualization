@@ -122,7 +122,7 @@ const Graph: React.FC<Props> = ({
         graphRef.current.refresh();
     };
 
-    // On node left click - zoom in on the node and pull up info box
+    // On node left click - zoom in on the node and pull up info box or go into Select Nodes mode
     const handleNodeClick = useCallback(
         (node: any) => {
             if (node != null) {
@@ -195,6 +195,7 @@ const Graph: React.FC<Props> = ({
                     threshold,
                     highlightNodes,
                     hoverNode,
+                    selectedNodes,
                     defNodeColor,
                     setDefNodeColor,
                     antiPattern,

@@ -61,6 +61,7 @@ function getColor(
     threshold: number,
     highlightNodes: any,
     hoverNode: any,
+    selectedNodes: any,
     defNodeColor: any,
     setDefNodeColor: any,
     antipattern: any,
@@ -86,6 +87,10 @@ function getColor(
         ) {
             return HOVER_NEIGHBOR;
         }
+    }
+
+    if(selectedNodes.includes(node.nodeName)){
+        return ORANGE;
     }
 
     if (trackNodes.includes(node.nodeName)) {
@@ -367,6 +372,7 @@ function getSpriteColor(
     graphData: any,
     threshold: number,
     highlightNodes: any,
+    selectedNodes: any,
     hoverNode: any,
     defNodeColor: any,
     setDefNodeColor: any,
@@ -382,6 +388,7 @@ function getSpriteColor(
         threshold,
         highlightNodes,
         hoverNode,
+        selectedNodes,
         defNodeColor,
         setDefNodeColor,
         antipattern,
