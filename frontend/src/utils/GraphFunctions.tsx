@@ -51,7 +51,7 @@ function getVisibility(node: any, hideNodes: any, selectNodes: any, selectedNode
     if (hideNodes.has(node)) {
         return false;
     }
-    if (selectNodes){
+    if (!selectNodes){
         if (selectedNodes.has(node)){
             return false;
         }
