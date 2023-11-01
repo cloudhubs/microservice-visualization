@@ -51,8 +51,8 @@ function getVisibility(node: any, hideNodes: any, selectNodes: any, selectedNode
     if (hideNodes.has(node)) {
         return false;
     }
-    if (!selectNodes){
-        if (selectedNodes.has(node)){
+    if (!selectNodes && selectedNodes.length > 0){
+        if (!selectedNodes.includes(node.nodeName)){
             return false;
         }
     } 
