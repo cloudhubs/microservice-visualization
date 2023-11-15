@@ -267,7 +267,9 @@ const Graph: React.FC<Props> = ({
                     antiPattern,
                     true,
                     selectedAntiPattern,
-                    focusNode
+                    focusNode,
+                    selectNodes,
+                    selectedNodes,
                 )
             }
             linkDirectionalParticles={(link: any) => {
@@ -290,7 +292,9 @@ const Graph: React.FC<Props> = ({
                     antiPattern,
                     true,
                     selectedAntiPattern,
-                    focusNode
+                    focusNode,
+                    selectNodes,
+                    selectedNodes,
                 )
             }
             linkOpacity={undefined}

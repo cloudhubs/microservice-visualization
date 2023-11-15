@@ -408,7 +408,9 @@ function getLinkOpacity(
     link: any,
     search: any,
     threed: any,
-    focusNode: any
+    focusNode: any,
+    selectNode: any,
+    selectedNodes: any,
 ): number {
     if (search && search !== "") {
         if (
@@ -423,6 +425,11 @@ function getLinkOpacity(
                 return 0.2;
             }
             return 0.1;
+        }
+    }
+    if (!selectNode && selectedNodes.length > 0){
+        if (!selectedNodes.includes(link.source.nodeName)){
+            return 0.0;
         }
     }
 
@@ -450,7 +457,9 @@ function getLinkColor(
     antiPattern: any,
     threed: any,
     selectedAntiPattern: any,
-    focusNode: any
+    focusNode: any,
+    selectNodes: any,
+    selectedNodes: any,
 ) {
     if (
         link.source.nodeName === hoverNode ||
@@ -470,7 +479,9 @@ function getLinkColor(
                 link,
                 search,
                 threed,
-                focusNode
+                focusNode,
+                selectNodes,
+                selectedNodes,
             )})`;
         } else if (selectedAntiPattern == "Cyclic Dependency") {
             if (linkInAntiPattern(link, selectedAntiPattern)) {
@@ -488,7 +499,9 @@ function getLinkColor(
         link,
         search,
         threed,
-        focusNode
+        focusNode,
+        selectNodes,
+        selectedNodes,
     )})`;
 }
 
@@ -496,11 +509,13 @@ function linkColorAsSourceNodeColor(
     link: any,
     search: any,
     threed: any,
-    focusNode: any
+    focusNode: any,
+    selectNode: any,
+    selectedNodes: any,
 ) {
     let color = link.source.color;
     color = color
-        .replace(`)`, `, ${getLinkOpacity(link, search, threed, focusNode)})`)
+        .replace(`)`, `, ${getLinkOpacity(link, search, threed, focusNode, selectNode, selectedNodes)})`)
         .replace("rgb", "rgba");
     return color;
 }
