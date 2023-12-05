@@ -119,6 +119,9 @@ const VisualizationOptions: React.FC<Props> = ({
                     {...GraphProps}
                     search={search}
                     threshold={threshold}
+                    selectNodes = {selectNodes}
+                    selectedNodes = {selectedNodes}
+                    setSelectedNodes = {setSelectedNodes}
                     graphRef={graphRef}
                     setInitCoords={setInitCoords}
                     setInitRotation={setInitRotation}

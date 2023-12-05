@@ -20,6 +20,9 @@ type Props = {
     search: string;
     threshold: number;
     sharedProps: SharedProps;
+    selectNodes: boolean;
+    selectedNodes: any;
+    setSelectedNodes: any;
     graphRef: any;
     setInitCoords: any;
     setInitRotation: any;
@@ -40,6 +43,9 @@ const Graph: React.FC<Props> = ({
     width,
     height,
     sharedProps,
+    selectNodes,
+    selectedNodes,
+    setSelectedNodes,
     search,
     threshold,
     graphRef,
@@ -150,7 +156,7 @@ const Graph: React.FC<Props> = ({
              }}
              linkDirectionalArrowRelPos={sharedProps.linkDirectionalArrowRelPos}
              linkDirectionalArrowColor={(link) =>
-                 getLinkColor(link, search, hoverNode, antiPattern, false, null, null)
+                 getLinkColor(link, search, hoverNode, antiPattern, false, null, null, selectNodes, selectedNodes)
              }
              linkDirectionalParticles={(link) =>
                  highlightLinks.has(link) ? 2 : 0
@@ -159,7 +165,7 @@ const Graph: React.FC<Props> = ({
              onNodeClick={handleNodeClick}
              onNodeHover={handleNodeHover}
              onLinkHover={handleLinkHover}
-             nodeVisibility={(node) => getVisibility(node, hideNodes)}
+             nodeVisibility={(node) => getVisibility(node, hideNodes, selectNodes, selectedNodes)}
              nodeId={"nodeName"}
              nodeCanvasObjectMode={() => "after"}
              nodeRelSize={8}
@@ -184,6 +190,7 @@ const Graph: React.FC<Props> = ({
                      threshold,
                      highlightNodes,
                      hoverNode,
+                     selectedNodes,
                      defNodeColor,
                      setDefNodeColor,
                      antiPattern,
@@ -212,7 +219,7 @@ const Graph: React.FC<Props> = ({
                  }
              }}
              linkColor={(link) =>
-                 getLinkColor(link, search, hoverNode, antiPattern, false, null, null)
+                 getLinkColor(link, search, hoverNode, antiPattern, false, null, null, selectNodes, selectedNodes)
              }
              linkCurvature={(link) => {
                  let test = false;
