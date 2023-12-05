@@ -39,6 +39,8 @@ const GraphButton: React.FC<ButtonProps> = ({ onClick, ...props }) => {
 type Props = {
     graphRef: any;
     graphData: any;
+    selectNode: boolean;
+    setSelectNodes: any;
     setGraphData: any;
     initCoords: any;
     initRotation: any;
@@ -48,6 +50,8 @@ type Props = {
 const GraphButtonMenu: React.FC<Props> = ({
     graphRef,
     graphData,
+    selectNode,
+    setSelectNodes,
     setGraphData,
     initCoords,
     initRotation,
@@ -200,6 +204,25 @@ const GraphButtonMenu: React.FC<Props> = ({
             setNumScreenshots(++numScreenshots);
         });
     }
+    
+    const [showMessage, setShowMessage] = useState(false);
+    const [messageContent, setMessageContent] = useState("");
+
+    function selectNodes() {
+        // Set your message content here
+        const message = "In Select Node Mode";
+        setSelectNodes(!selectNode);
+
+        // Update the message content and show the message
+        setMessageContent(selectNode.toString());
+        setShowMessage(true);
+
+        // You can also add a delay to hide the message after a certain time
+        setTimeout(() => {
+          setShowMessage(false);
+        }, 3000); // Hide the message after 3 seconds (adjust the time as needed)
+
+      }
 
     return (
         <div className="flex flex-col gap-2 w-full h-fit">
@@ -207,6 +230,8 @@ const GraphButtonMenu: React.FC<Props> = ({
             <GraphButton onClick={screenshotGraph}>Capture Graph</GraphButton>
             <GraphButton onClick={toggleTrack}>Track Menu</GraphButton>
             <GraphButton onClick={forceReset}>Reset</GraphButton>
+            <GraphButton onClick={selectNodes}>Select Nodes</GraphButton>
+            {showMessage && <div className="message">{messageContent}</div>}
         </div>
     );
 };

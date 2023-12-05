@@ -8,6 +8,8 @@ type Props = {
     setSearch: React.Dispatch<React.SetStateAction<string>>;
     value: number;
     setValue: React.Dispatch<React.SetStateAction<number>>;
+    selectNode: boolean;
+    setSelectedNode: any;
     graphData: any;
     setGraphData: any;
     initCoords: any;
@@ -33,6 +35,8 @@ const GraphMenu: React.FC<Props> = ({
     setSearch,
     value,
     setValue,
+    selectNode,
+    setSelectedNode,
     graphData,
     setGraphData,
     initCoords,
@@ -84,6 +88,8 @@ const GraphMenu: React.FC<Props> = ({
             <GraphButtonMenu
                 graphRef={graphRef}
                 graphData={graphData}
+                selectNode = {selectNode}
+                setSelectNodes={setSelectedNode}
                 setGraphData={setGraphData}
                 initCoords={initCoords}
                 initRotation={initRotation}

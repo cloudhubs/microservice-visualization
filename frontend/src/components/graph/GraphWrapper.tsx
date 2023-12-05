@@ -9,6 +9,9 @@ type Props = {
     height: number;
     search: string;
     threshold: number;
+    selectNodes: boolean;
+    selectedNodes: any;
+    setSelectedNodes: any;
     graphRef: any;
     graphData: any;
     setInitCoords: any;
@@ -30,6 +33,9 @@ const VisualizationOptions: React.FC<Props> = ({
     height,
     search,
     threshold,
+    selectNodes,
+    selectedNodes,
+    setSelectedNodes,
     graphRef,
     graphData,
     setInitCoords,
@@ -135,6 +141,9 @@ const VisualizationOptions: React.FC<Props> = ({
                 {...GraphProps}
                 search={search}
                 threshold={threshold}
+                selectNodes={selectNodes}
+                selectedNodes = {selectedNodes}
+                setSelectedNodes={setSelectedNodes}
                 graphRef={graphRef}
                 setInitCoords={setInitCoords}
                 setInitRotation={setInitRotation}

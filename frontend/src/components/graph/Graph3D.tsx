@@ -18,6 +18,9 @@ type Props = {
     search: string;
     threshold: number;
     sharedProps: SharedProps;
+    selectNodes: boolean;
+    selectedNodes: any;
+    setSelectedNodes: any;
     graphRef: any;
     setInitCoords: any;
     setInitRotation: any;
@@ -38,6 +41,9 @@ const Graph: React.FC<Props> = ({
                                     width,
                                     height,
                                     sharedProps,
+                                    selectNodes,
+                                    selectedNodes,
+                                    setSelectedNodes,
                                     search,
                                     threshold,
                                     graphRef,
@@ -131,30 +137,46 @@ const Graph: React.FC<Props> = ({
         graphRef.current.refresh();
     };
 
-    // On node left click - zoom in on the node and pull up info box
+    // On node left click - zoom in on the node and pull up info box or go into Select Nodes mode
     const handleNodeClick = useCallback(
         (node: any) => {
             if (node != null) {
-                if (graphRef.current) {
-                    console.log(graphRef.current.camera());
-                    const camPos = graphRef.current.camera().position;
-                    graphRef.current.cameraPosition(
-                        {
-                            x: camPos.x,
-                            y: camPos.y,
-                            z: camPos.z,
-                        },
-                        node,
-                        2500
-                    );
+                if (selectNodes === true){ //if in Select Nodes Mode
+                    if (selectedNodes.includes(node.nodeName)) {
+                        selectedNodes.splice(
+                            selectedNodes.findIndex(
+                                (element: any) => element === node.nodeName
+                            ),
+                            1
+                        );
+                        setSelectedNodes([...selectedNodes]);
+                    } else {
+                        selectedNodes.push(node.nodeName);
+                        setSelectedNodes([...selectedNodes]);
+                    }
                 }
-                const event = new CustomEvent("nodeClick", {
-                    detail: { node: node },
-                });
-                document.dispatchEvent(event);
+                else {
+                    if (graphRef.current) {
+                        console.log(graphRef.current.camera());
+                        const camPos = graphRef.current.camera().position;
+                        graphRef.current.cameraPosition(
+                            {
+                                x: camPos.x,
+                                y: camPos.y,
+                                z: camPos.z,
+                            },
+                            node,
+                            2500
+                        );
+                    }
+                    const event = new CustomEvent("nodeClick", {
+                        detail: { node: node },
+                    });
+                    document.dispatchEvent(event);
+                }
             }
         },
-        [graphRef]
+        [graphRef, selectNodes]
     );
 
     return (
@@ -164,7 +186,7 @@ const Graph: React.FC<Props> = ({
             nodeId={"nodeName"}
             width={width}
             height={height}
-            nodeVisibility={(node) => getVisibility(node, hideNodes)}
+            nodeVisibility={(node) => getVisibility(node, hideNodes, selectNodes, selectedNodes)}
             onNodeRightClick={(node: any) => {
                 const event = new CustomEvent("nodecontextmenu", {
                     detail: {
@@ -188,6 +210,7 @@ const Graph: React.FC<Props> = ({
                     threshold,
                     highlightNodes,
                     hoverNode,
+                    selectedNodes,
                     defNodeColor,
                     setDefNodeColor,
                     antiPattern,
@@ -270,7 +293,9 @@ const Graph: React.FC<Props> = ({
                     antiPattern,
                     true,
                     selectedAntiPattern,
-                    focusNode
+                    focusNode,
+                    selectNodes,
+                    selectedNodes,
                 )
             }
             linkDirectionalParticles={(link: any) => {
@@ -298,7 +323,9 @@ const Graph: React.FC<Props> = ({
                     antiPattern,
                     true,
                     selectedAntiPattern,
-                    focusNode
+                    focusNode,
+                    selectNodes,
+                    selectedNodes,
                 )
             }
             linkOpacity={undefined}

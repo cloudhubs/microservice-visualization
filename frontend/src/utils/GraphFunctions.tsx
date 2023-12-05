@@ -47,10 +47,15 @@ function showNeighbors(node: any, graphData: any, setHideNodes: any) {
     setHideNodes(hideNodes);
 }
 
-function getVisibility(node: any, hideNodes: any) {
+function getVisibility(node: any, hideNodes: any, selectNodes: any, selectedNodes: any) {
     if (hideNodes.has(node)) {
         return false;
     }
+    if (!selectNodes && selectedNodes.length > 0){
+        if (!selectedNodes.includes(node.nodeName)){
+            return false;
+        }
+    } 
     return true;
 }
 
@@ -61,6 +66,7 @@ function getColor(
     threshold: number,
     highlightNodes: any,
     hoverNode: any,
+    selectedNodes: any,
     defNodeColor: any,
     setDefNodeColor: any,
     antipattern: any,
@@ -86,6 +92,10 @@ function getColor(
         ) {
             return HOVER_NEIGHBOR;
         }
+    }
+
+    if(selectedNodes.includes(node.nodeName)){
+        return ORANGE;
     }
 
     if (trackNodes.includes(node.nodeName)) {
@@ -367,6 +377,7 @@ function getSpriteColor(
     graphData: any,
     threshold: number,
     highlightNodes: any,
+    selectedNodes: any,
     hoverNode: any,
     defNodeColor: any,
     setDefNodeColor: any,
@@ -382,6 +393,7 @@ function getSpriteColor(
         threshold,
         highlightNodes,
         hoverNode,
+        selectedNodes,
         defNodeColor,
         setDefNodeColor,
         antipattern,
@@ -396,7 +408,9 @@ function getLinkOpacity(
     link: any,
     search: any,
     threed: any,
-    focusNode: any
+    focusNode: any,
+    selectNode: any,
+    selectedNodes: any,
 ): number {
     if (search && search !== "") {
         if (
@@ -411,6 +425,11 @@ function getLinkOpacity(
                 return 0.2;
             }
             return 0.1;
+        }
+    }
+    if (!selectNode && selectedNodes.length > 0){
+        if (!selectedNodes.includes(link.source.nodeName)){
+            return 0.0;
         }
     }
 
@@ -438,7 +457,9 @@ function getLinkColor(
     antiPattern: any,
     threed: any,
     selectedAntiPattern: any,
-    focusNode: any
+    focusNode: any,
+    selectNodes: any,
+    selectedNodes: any,
 ) {
     if (
         link.source.nodeName === hoverNode ||
@@ -458,7 +479,9 @@ function getLinkColor(
                 link,
                 search,
                 threed,
-                focusNode
+                focusNode,
+                selectNodes,
+                selectedNodes,
             )})`;
         } else if (selectedAntiPattern == "Cyclic Dependency") {
             if (linkInAntiPattern(link, selectedAntiPattern)) {
@@ -476,7 +499,9 @@ function getLinkColor(
         link,
         search,
         threed,
-        focusNode
+        focusNode,
+        selectNodes,
+        selectedNodes,
     )})`;
 }
 
@@ -484,11 +509,13 @@ function linkColorAsSourceNodeColor(
     link: any,
     search: any,
     threed: any,
-    focusNode: any
+    focusNode: any,
+    selectNode: any,
+    selectedNodes: any,
 ) {
     let color = link.source.color;
     color = color
-        .replace(`)`, `, ${getLinkOpacity(link, search, threed, focusNode)})`)
+        .replace(`)`, `, ${getLinkOpacity(link, search, threed, focusNode, selectNode, selectedNodes)})`)
         .replace("rgb", "rgba");
     return color;
 }
